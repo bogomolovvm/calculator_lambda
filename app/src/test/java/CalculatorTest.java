@@ -2,6 +2,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 class CalculatorTest {
     static Calculator calc;
@@ -13,14 +15,14 @@ class CalculatorTest {
     @ParameterizedTest
     @ValueSource(ints = { 1, 2, 3 })
     void testPlus(Integer argument) {
-        Assertions.assertEquals(calc.plus.apply(argument, argument),
-                argument + argument);
+        int answer = calc.plus.apply(argument, argument);
+        assertThat(answer, equalTo(argument + argument));
     }
     @ParameterizedTest
     @ValueSource(ints = { -1, 2, 3 })
     void testMinus(Integer argument) {
-        Assertions.assertEquals(calc.minus.apply(argument, argument),
-                argument - argument);
+        int answer = calc.minus.apply(argument, argument);
+        assertThat(answer, is(0));
     }
     @ParameterizedTest
     @ValueSource(ints = { -1, 0, 1 })
@@ -30,5 +32,14 @@ class CalculatorTest {
                 () -> calc.devide.apply(argument, 0)
         );
     }
+
+    @ParameterizedTest
+    @ValueSource(ints = { -10, 0 })
+    void testIsPositiveFalse(int argument) {
+        boolean result = calc.isPositive.test(argument);
+
+        assertThat(result, is(not(true)));
+    }
+
 
 }
